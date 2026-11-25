@@ -2,7 +2,6 @@ name: FTP deploy PHP
 
 # Manual deploy of listed backend files via LWS FTP.
 # Secrets required: GENSYSRH_FTP_HOST, GENSYSRH_FTP_USER, GENSYSRH_FTP_PASS
-# Never commit passwords â see docs/FTP_CREDENTIALS.md
 
 on:
   workflow_dispatch:
@@ -10,7 +9,7 @@ on:
       files:
         description: 'Comma-separated paths relative to repo root'
         required: true
-        default: 'backend/app/Services/Workflow/AuditService.php'
+        default: 'deploy-smoke.txt'
 
 jobs:
   deploy:
@@ -28,7 +27,7 @@ jobs:
           : "${GENSYSRH_FTP_HOST:?missing secret GENSYSRH_FTP_HOST}"
           : "${GENSYSRH_FTP_USER:?missing secret GENSYSRH_FTP_USER}"
           : "${GENSYSRH_FTP_PASS:?missing secret GENSYSRH_FTP_PASS}"
-          # Dedicated FTP user chroots into public_html/gensys-rh â BASE is host root.
+          # Dedicated FTP user chroots into public_html/gensys-rh; BASE is host root.
           BASE="ftp://${GENSYSRH_FTP_HOST}"
           AUTH="${GENSYSRH_FTP_USER}:${GENSYSRH_FTP_PASS}"
           IFS=',' read -ra FILES <<< "${{ github.event.inputs.files }}"
